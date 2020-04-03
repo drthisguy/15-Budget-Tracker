@@ -18,8 +18,8 @@ const mongoose = require("mongoose"),
       default: Date.now
     }
   }
-);
+),
 
-const Transaction = mongoose.model("Transaction", transactionSchema);
+ Transaction = mongoose.model("Transaction", transactionSchema);
 
 module.exports = Transaction;

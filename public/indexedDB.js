@@ -1,18 +1,14 @@
-let request = indexedDB.open('budgetIDB', 1),
-    db,
-    tx,
-    store;
+const request = indexedDB.open('budgetIDB', 1);
+let  db;
 
 request.onupgradeneeded = function() {
     const db = request.result;
         db.createObjectStore('offlineStore', { autoIncrement: true });
 };
 
-
 request.onerror = function(e) {
     console.log('Database error: ' + e.target.errorCode);
   };
-
 
 request.onsuccess = () => {
     db = request.result;
@@ -28,12 +24,12 @@ function saveRecord(record) {
  }
 
 function accessDB() {
-   tx = db.transaction(['offlineStore'], 'readwrite');
-   store = tx.objectStore('offlineStore');
+   const tx = db.transaction(['offlineStore'], 'readwrite'),
+    store = tx.objectStore('offlineStore'),
 
-   const getIDB = store.getAll();
+    getIDB = store.getAll();
 
-   getIDB.onsuccess = async () => {
+    getIDB.onsuccess = async () => {
        if(getIDB.result.length > 0) {
            await fetch('/api/transaction/bulk', {
                method: 'POST',
@@ -43,6 +39,7 @@ function accessDB() {
                 "Content-Type": "application/json"
               }
            })
+           await tx.done;
            const store = db.transaction(['offlineStore'], 'readwrite').objectStore('offlineStore');
            store.clear();
        }

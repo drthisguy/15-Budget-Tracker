@@ -1,28 +1,46 @@
 //browser support
 indexedDB = indexedDB || mozIndexedDB || webkitIndexedDB || msIndexedDB;
+let db;
 
 if (!indexedDB) {
-    show
+    const message = 'Warning: Your browser will not support offline mode',
+      className = 'danger';
+
+    showAlert(message, className);
+    setTimeout(() => clearAlert(), 3000);
+} else {
+        
+    const request = indexedDB.open('budgetIDB', 1);
+
+    request.onupgradeneeded = () => {
+        db = request.result;
+        db.createObjectStore('offlineStore', { autoIncrement: true });
+    };
+
+    request.onsuccess = () => {
+        db = request.result;
+
+        if (navigator.onLine) {
+            accessDB();
+        }
+        
+    db.onerror = (e) => {
+        const message = "Database error: " + e.target.errorCode,
+          className = 'danger';
+
+        showAlert(message, className);
+        setTimeout(() => clearAlert(), 10000);
+        }
+    };
+
+    request.onerror = () => {
+        const message = 'In this case, permission is required for access to your offline database.',
+          className = 'danger';
+
+        showAlert(message, className);
+        setTimeout(() => clearAlert(), 10000);
+    };
 }
-const request = indexedDB.open('budgetIDB', 1);
-let  db;
-
-request.onupgradeneeded = function() {
-     db = request.result;
-     db.createObjectStore('offlineStore', { autoIncrement: true });
-};
-
-request.onerror = function(e) {
-    console.log('Database error: ' + e.target.errorCode);
-  };
-
-request.onsuccess = () => {
-    db = request.result;
-
-    if (navigator.onLine) {
-        accessDB();
-    }
-};
 
 function saveRecord(record) {
     const store = db.transaction(['offlineStore'], 'readwrite').objectStore('offlineStore');

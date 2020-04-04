@@ -149,12 +149,3 @@ document.querySelector("#add-btn").onclick = function() {
 document.querySelector("#sub-btn").onclick = function() {
   sendTransaction(false);
 };
-
-// listen for offline mode and send message to the DOM. 
-window.addEventListener('offline', () => {
-  const message = "Budget Tracker is running in offline mode.. but don't worry.",
-      className = 'warning';
-
-    showAlert(message, className);
-    window.addEventListener('online', () => clearAlert());
-});

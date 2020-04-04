@@ -1,9 +1,15 @@
+//browser support
+indexedDB = indexedDB || mozIndexedDB || webkitIndexedDB || msIndexedDB;
+
+if (!indexedDB) {
+    show
+}
 const request = indexedDB.open('budgetIDB', 1);
 let  db;
 
 request.onupgradeneeded = function() {
-    const db = request.result;
-        db.createObjectStore('offlineStore', { autoIncrement: true });
+     db = request.result;
+     db.createObjectStore('offlineStore', { autoIncrement: true });
 };
 
 request.onerror = function(e) {
@@ -46,7 +52,19 @@ function accessDB() {
    }
 }
 
- window.addEventListener('online', accessDB);
+// listen for offline mode and send message to the DOM. 
+window.addEventListener('offline', () => {
+    const message = "Budget Tracker is running in offline mode.. but don't worry.",
+        className = 'warning';
+  
+      showAlert(message, className);
+  });
+
+// listen for online return
+ window.addEventListener('online', () => {
+    clearAlert();
+    accessDB()
+ });
 
  //show messages
  function showAlert(message, className){
@@ -54,8 +72,8 @@ function accessDB() {
 
     const div = document.createElement('div');
     div.className = `message ${className}`;
-  
     div.appendChild(document.createTextNode(message));
+  
     const container = document.querySelector('.total');
 
     //insert alert

@@ -1,11 +1,13 @@
-const express = require("express");
-const logger = require("morgan");
-const mongoose = require("mongoose");
-const compression = require("compression");
+const express = require("express"),
+path = require("path"),
+logger = require("morgan"),
+mongoose = require("mongoose"),
+router = require("./routes/api"),
+compression = require("compression"),
 
-const PORT = 3000;
+ PORT = process.env.PORT || 3000,
 
-const app = express();
+ app = express();
 
 app.use(logger("dev"));
 
@@ -21,9 +23,14 @@ mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/budget", {
   useFindAndModify: false
 })
 .then(() => {console.log('Database connection established.')})
-.catch(  err => {console.log(err)});
+.catch( err => {console.log(err)});
 
-app.use(require("./routes/api.js"));
+// HTML route
+router.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../public/index.html"));
+});
+
+app.use(router);
 
 app.listen(PORT, () => {
   console.log("==> 🌎  Listening on port %s. Visit http://localhost:%s/ in your browser.", PORT, PORT);

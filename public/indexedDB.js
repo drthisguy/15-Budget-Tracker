@@ -1,46 +1,46 @@
 //browser support
 indexedDB = indexedDB || mozIndexedDB || webkitIndexedDB || msIndexedDB;
-let db;
 
 if (!indexedDB) {
     const message = 'Warning: Your browser will not support offline mode',
-      className = 'danger';
+    className = 'danger';
 
     showAlert(message, className);
     setTimeout(() => clearAlert(), 3000);
-} else {
-        
-    const request = indexedDB.open('budgetIDB', 1);
+} 
+    
+const request = indexedDB.open('budgetIDB', 1);
+let db;
 
-    request.onupgradeneeded = () => {
-        db = request.result;
-        db.createObjectStore('offlineStore', { autoIncrement: true });
-    };
+request.onupgradeneeded = () => {
+    db = request.result;
+    db.createObjectStore('offlineStore', { autoIncrement: true });
+};
 
-    request.onsuccess = () => {
-        db = request.result;
+request.onsuccess = () => {
+    db = request.result;
 
-        if (navigator.onLine) {
-            accessDB();
-        }
-        
+    if (navigator.onLine) {
+        accessDB();
+    }
+
+    // catch all bubbled DB errors.
     db.onerror = (e) => {
         const message = "Database error: " + e.target.errorCode,
-          className = 'danger';
+        className = 'danger';
 
         showAlert(message, className);
         setTimeout(() => clearAlert(), 10000);
-        }
-    };
+    }
+};
 
-    request.onerror = () => {
-        const message = 'In this case, permission is required for access to your offline database.',
-          className = 'danger';
+request.onerror = () => {
+    const message = 'Permission is required for access to your offline database.',
+        className = 'danger';
 
-        showAlert(message, className);
-        setTimeout(() => clearAlert(), 10000);
-    };
-}
+    showAlert(message, className);
+    setTimeout(() => clearAlert(), 10000);
+};
 
 function saveRecord(record) {
     const store = db.transaction(['offlineStore'], 'readwrite').objectStore('offlineStore');
@@ -50,7 +50,6 @@ function saveRecord(record) {
 function accessDB() {
    const tx = db.transaction(['offlineStore'], 'readwrite'),
     store = tx.objectStore('offlineStore'),
-
     getIDB = store.getAll();
 
     getIDB.onsuccess = async () => {
@@ -80,8 +79,8 @@ window.addEventListener('offline', () => {
 
 // listen for online return
  window.addEventListener('online', () => {
-    clearAlert();
-    accessDB()
+     clearAlert();
+     accessDB();
  });
 
  //show messages
@@ -99,7 +98,7 @@ window.addEventListener('offline', () => {
 }
 
 //clear messages
-function clearAlert(){
+function clearAlert() {
     const currentAlert = document.querySelector('.message');
     if(currentAlert){
         currentAlert.remove();

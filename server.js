@@ -1,13 +1,13 @@
 const express = require("express"),
-path = require("path"),
-logger = require("morgan"),
-mongoose = require("mongoose"),
-router = require("./routes/api"),
-compression = require("compression"),
+  path = require("path"),
+  logger = require("morgan"),
+  mongoose = require("mongoose"),
+  router = require("./routes/api"),
+  compression = require("compression"),
 
- PORT = process.env.PORT || 3000,
+  PORT = process.env.PORT || 3000,
 
- app = express();
+  app = express();
 
 app.use(logger("dev"));
 

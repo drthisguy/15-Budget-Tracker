@@ -47,3 +47,25 @@ function accessDB() {
 }
 
  window.addEventListener('online', accessDB);
+
+ //show messages
+ function showAlert(message, className){
+    clearAlert();
+
+    const div = document.createElement('div');
+    div.className = `message ${className}`;
+  
+    div.appendChild(document.createTextNode(message));
+    const container = document.querySelector('.total');
+
+    //insert alert
+    container.parentNode.insertBefore(div, container.nextSibling);
+}
+
+//clear messages
+function clearAlert(){
+    const currentAlert = document.querySelector('.message');
+    if(currentAlert){
+        currentAlert.remove();
+    }
+}

@@ -8,8 +8,7 @@ if (!indexedDB) {
 
     showAlert(message, className);
     setTimeout(() => clearAlert(), 3000);
-} else {
-        
+} else {  
     const request = indexedDB.open('budgetIDB', 1);
 
     request.onupgradeneeded = () => {
@@ -26,7 +25,7 @@ if (!indexedDB) {
 
         // catch all bubbled DB errors.
         db.onerror = (e) => {
-            const message = "Database error: " + e.target.errorCode,
+            const message = `Database error: ${e.target.errorCode}`,
             className = 'danger';
 
             showAlert(message, className);
@@ -85,7 +84,7 @@ window.addEventListener('offline', () => {
  });
 
  //show messages
- function showAlert(message, className){
+ function showAlert(message, className) {
     clearAlert();
 
     const div = document.createElement('div');
@@ -99,7 +98,7 @@ window.addEventListener('offline', () => {
 }
 
 //clear messages
-function clearAlert(){
+function clearAlert() {
     const currentAlert = document.querySelector('.message');
     if(currentAlert){
         currentAlert.remove();
